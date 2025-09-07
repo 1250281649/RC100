@@ -5,8 +5,12 @@
 #include "freertos/task.h"
 #include "freertos/queue.h"
 #include "driver/gpio.h"
+#include <TFT_eSPI.h>
+#include "lvgl.h"
+#include "lv_port_disp.h"
 
 #define LED_PIN                     GPIO_NUM_22
+#define LCD_BL                      GPIO_NUM_4
 
 // 定义4个ADC通道
 #define NUM_CHANNELS 4
@@ -17,9 +21,16 @@ const adc1_channel_t channels[NUM_CHANNELS] = {
     ADC1_CHANNEL_5  // GPIO33
 };
 
+
 // 全局变量
 esp_adc_cal_characteristics_t *adc_chars;
 QueueHandle_t adc_queue;
+
+// static const uint16_t screenWidth = 240;
+// static const uint16_t screenHeight = 240;
+// static const uint32_t DISP_BUF_SIZE = screenHeight * screenWidth;
+// TFT_eSPI tft = TFT_eSPI(screenWidth, screenHeight); /* TFT instance */
+TFT_eSPI tft = TFT_eSPI();
 
 // ADC任务
 void adc_task(void *pvParameters) {
@@ -74,6 +85,27 @@ void setup()
 {
     Serial.begin(115200);
     Serial.println("RC Controller");
+
+    tft.begin();
+    lv_init();  //初始化lvgl库
+    lv_port_disp_init();
+    
+    gpio_reset_pin(LCD_BL);
+    gpio_set_direction(LCD_BL, GPIO_MODE_OUTPUT);
+    gpio_set_level(LCD_BL, 1);
+
+    // 获取当前活跃的屏幕对象
+    lv_obj_t * scr = lv_scr_act();
+    // 设置屏幕背景为白色
+    lv_obj_set_style_bg_color(scr, lv_color_hex(0xFFFFFF), LV_PART_MAIN); // 设置背景颜色为白色
+    lv_obj_set_style_bg_opa(scr, LV_OPA_COVER, LV_PART_MAIN);             // 设置背景完全不透明
+
+    lv_obj_t* label = lv_label_create(scr);
+    lv_label_set_text(label, "RC Controller");
+    lv_obj_set_style_text_color(label, lv_color_hex(0x000F0F), LV_PART_MAIN); // 设置文本颜色为黑色
+    lv_obj_align(label, LV_ALIGN_CENTER, 0, 100);
+
+
     // 初始化ADC
     adc1_config_width(ADC_WIDTH_BIT_12);
     for (int i = 0; i < NUM_CHANNELS; i++) {
@@ -103,5 +135,6 @@ void setup()
 
 
 void loop() {
-    vTaskDelay(1000);
+    lv_task_handler();
+    vTaskDelay(100);
 }
