@@ -80,12 +80,8 @@ void setup()
     Serial.println("RC Controller");
 
     lcd.begin();
-    // 获取当前活跃的屏幕对象
-    lv_obj_t * scr = lv_scr_act();
-    lv_obj_set_style_bg_color(scr, lv_color_hex(0x000000), LV_PART_MAIN);
-    lv_obj_set_style_bg_opa(scr, LV_OPA_COVER, LV_PART_MAIN);
-    lcd.batteryIndicator(scr, 200, 4); /* 初始电量100% */
     lcd.update_battery_display(15);
+    lcd.signalIconUpdate(4); /* 初始信号强度3格 */
 
     // 初始化ADC
     adc1_config_width(ADC_WIDTH_BIT_12);
