@@ -145,3 +145,26 @@ void LCDScreen::signalIconUpdate(int strength)
         }
     }
 }
+
+void LCDScreen::appLogo(const char* text, lv_coord_t x, lv_coord_t y, lv_color_t color)
+{
+    lv_obj_t * label = lv_label_create(lv_scr_act());
+    lv_label_set_text(label, text);
+    lv_obj_set_style_text_color(label, color, LV_PART_MAIN);
+    lv_obj_set_style_text_font(label, &lv_font_simsun_16_cjk, LV_STATE_DEFAULT);
+    lv_obj_set_pos(label, x, y);
+}
+
+void LCDScreen::statusBarCreate(lv_obj_t *parent, lv_coord_t x, lv_coord_t y)
+{
+    status_bar_outline = lv_obj_create(parent);
+    lv_obj_set_size(status_bar_outline, SCREEN_WIDTH - 12, 32);
+    lv_obj_set_pos(status_bar_outline, x, y);
+    
+    lv_style_init(&status_bar_style);
+    lv_style_set_border_width(&status_bar_style, 0);
+    lv_style_set_radius(&status_bar_style, 16);
+    lv_style_set_bg_color(&status_bar_style, BATTERY_OUTLINE_COLOR);
+    lv_style_set_bg_opa(&status_bar_style, LV_OPA_20);    // 设置背景透明
+    lv_obj_add_style(status_bar_outline, &status_bar_style, LV_PART_MAIN);
+}

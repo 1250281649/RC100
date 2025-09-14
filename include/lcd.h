@@ -42,8 +42,10 @@ public:
         screen = lv_scr_act(); /* 获取当前活跃的屏幕对象 */
         lv_obj_set_style_bg_color(screen, lv_color_hex(0x000000), LV_PART_MAIN);
         lv_obj_set_style_bg_opa(screen, LV_OPA_COVER, LV_PART_MAIN);
-        batteryIndicator(screen, SCREEN_WIDTH - SIGNAL_ICON_WIDTH - BATTERY_WIDTH - 32, 4); /* 初始电量100% */
-        signalIconCreate(screen, SCREEN_WIDTH - SIGNAL_ICON_WIDTH, 4);
+        statusBarCreate(screen, 6, 2);
+        batteryIndicator(screen, SCREEN_WIDTH - SIGNAL_ICON_WIDTH - BATTERY_WIDTH - 32 - 20, 8); /* 初始电量100% */
+        signalIconCreate(screen, SCREEN_WIDTH - SIGNAL_ICON_WIDTH - 20, 8);
+        appLogo("RC510", 20, 8, lv_palette_main(LV_PALETTE_BLUE));
     }
 
     void clearScreen();
@@ -53,6 +55,9 @@ public:
 
     void signalIconCreate(lv_obj_t *parent, lv_coord_t x, lv_coord_t y);
     void signalIconUpdate(int strength);
+
+    void appLogo(const char* text, lv_coord_t x, lv_coord_t y, lv_color_t color);
+    void statusBarCreate(lv_obj_t *parent, lv_coord_t x, lv_coord_t y);
 
 private:
     lv_obj_t* screen = lv_scr_act(); /* 获取当前活跃的屏幕对象 */
@@ -70,4 +75,6 @@ private:
     lv_style_t lableStyle;
 
     lv_obj_t *signal_bars[4]; // 信号强度竖条
+    lv_obj_t *status_bar_outline;
+    lv_style_t status_bar_style;
 };
