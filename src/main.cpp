@@ -23,6 +23,7 @@ const adc1_channel_t channels[NUM_CHANNELS] = {
 // 全局变量
 esp_adc_cal_characteristics_t *adc_chars;
 QueueHandle_t adc_queue;
+LCDScreen lcd;
 
 // ADC任务
 void adc_task(void *pvParameters) {
@@ -78,19 +79,13 @@ void setup()
     Serial.begin(115200);
     Serial.println("RC Controller");
 
-    LCDInit();
-
+    lcd.begin();
     // 获取当前活跃的屏幕对象
     lv_obj_t * scr = lv_scr_act();
-    // 设置屏幕背景为白色
-    lv_obj_set_style_bg_color(scr, lv_color_hex(0xFFFFFF), LV_PART_MAIN); // 设置背景颜色为白色
-    lv_obj_set_style_bg_opa(scr, LV_OPA_COVER, LV_PART_MAIN);             // 设置背景完全不透明
-
-    lv_obj_t* label = lv_label_create(scr);
-    lv_label_set_text(label, "RC Controller");
-    lv_obj_set_style_text_color(label, lv_color_hex(0x000F0F), LV_PART_MAIN); // 设置文本颜色为黑色
-    lv_obj_align(label, LV_ALIGN_CENTER, 0, 100);
-
+    lv_obj_set_style_bg_color(scr, lv_color_hex(0x000000), LV_PART_MAIN);
+    lv_obj_set_style_bg_opa(scr, LV_OPA_COVER, LV_PART_MAIN);
+    lcd.batteryIndicator(scr, 200, 4); /* 初始电量100% */
+    lcd.update_battery_display(15);
 
     // 初始化ADC
     adc1_config_width(ADC_WIDTH_BIT_12);
