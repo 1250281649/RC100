@@ -5,12 +5,10 @@
 #include "freertos/task.h"
 #include "freertos/queue.h"
 #include "driver/gpio.h"
-#include <TFT_eSPI.h>
 #include "lvgl.h"
 #include "lv_port_disp.h"
-
-#define LED_PIN                     GPIO_NUM_22
-#define LCD_BL                      GPIO_NUM_4
+#include "lcd.h"
+#include "io_def.h"
 
 // 定义4个ADC通道
 #define NUM_CHANNELS 4
@@ -25,12 +23,6 @@ const adc1_channel_t channels[NUM_CHANNELS] = {
 // 全局变量
 esp_adc_cal_characteristics_t *adc_chars;
 QueueHandle_t adc_queue;
-
-// static const uint16_t screenWidth = 240;
-// static const uint16_t screenHeight = 240;
-// static const uint32_t DISP_BUF_SIZE = screenHeight * screenWidth;
-// TFT_eSPI tft = TFT_eSPI(screenWidth, screenHeight); /* TFT instance */
-TFT_eSPI tft = TFT_eSPI();
 
 // ADC任务
 void adc_task(void *pvParameters) {
@@ -86,13 +78,7 @@ void setup()
     Serial.begin(115200);
     Serial.println("RC Controller");
 
-    tft.begin();
-    lv_init();  //初始化lvgl库
-    lv_port_disp_init();
-    
-    gpio_reset_pin(LCD_BL);
-    gpio_set_direction(LCD_BL, GPIO_MODE_OUTPUT);
-    gpio_set_level(LCD_BL, 1);
+    LCDInit();
 
     // 获取当前活跃的屏幕对象
     lv_obj_t * scr = lv_scr_act();
