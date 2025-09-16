@@ -1,6 +1,7 @@
 #include <TFT_eSPI.h>
 #include "io_def.h"
 #include "lvgl.h"
+#include "ui.h"
 
 #define SCREEN_WIDTH            240
 #define SCREEN_HEIGHT           240
@@ -39,13 +40,9 @@ public:
 
     void begin() {
         LCDInit();
-        screen = lv_scr_act(); /* 获取当前活跃的屏幕对象 */
-        lv_obj_set_style_bg_color(screen, lv_color_hex(0x000000), LV_PART_MAIN);
-        lv_obj_set_style_bg_opa(screen, LV_OPA_COVER, LV_PART_MAIN);
-        statusBarCreate(screen, 6, 2);
-        batteryIndicator(screen, SCREEN_WIDTH - SIGNAL_ICON_WIDTH - BATTERY_WIDTH - 32 - 20, 8); /* 初始电量100% */
-        signalIconCreate(screen, SCREEN_WIDTH - SIGNAL_ICON_WIDTH - 20, 8);
-        appLogo("RC510", 20, 8, lv_palette_main(LV_PALETTE_BLUE));
+        ui_init();
+
+        ScreenExcavatorInit();
     }
 
     void clearScreen();
@@ -58,6 +55,8 @@ public:
 
     void appLogo(const char* text, lv_coord_t x, lv_coord_t y, lv_color_t color);
     void statusBarCreate(lv_obj_t *parent, lv_coord_t x, lv_coord_t y);
+
+    void ScreenExcavatorInit();
 
 private:
     lv_obj_t* screen = lv_scr_act(); /* 获取当前活跃的屏幕对象 */

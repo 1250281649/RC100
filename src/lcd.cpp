@@ -168,3 +168,16 @@ void LCDScreen::statusBarCreate(lv_obj_t *parent, lv_coord_t x, lv_coord_t y)
     lv_style_set_bg_opa(&status_bar_style, LV_OPA_20);    // 设置背景透明
     lv_obj_add_style(status_bar_outline, &status_bar_style, LV_PART_MAIN);
 }
+
+void LCDScreen::ScreenExcavatorInit() {
+    ui_Screen1_screen_init();
+    lv_scr_load(ui_Screen1);
+
+    screen = lv_scr_act(); /* 获取当前活跃的屏幕对象 */
+    lv_obj_set_style_bg_color(screen, lv_color_hex(0x000000), LV_PART_MAIN);
+    lv_obj_set_style_bg_opa(screen, LV_OPA_COVER, LV_PART_MAIN);
+    statusBarCreate(screen, 6, 2);
+    batteryIndicator(screen, SCREEN_WIDTH - SIGNAL_ICON_WIDTH - BATTERY_WIDTH - 32 - 20, 8); /* 初始电量100% */
+    signalIconCreate(screen, SCREEN_WIDTH - SIGNAL_ICON_WIDTH - 20, 8);
+    appLogo("RC510", 20, 8, lv_palette_main(LV_PALETTE_BLUE));
+}
