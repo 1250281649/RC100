@@ -4,3 +4,5 @@
 .vscode/launch.json
 .vscode/ipch
 .vscode
+3rdparty/squareline/backup
+3rdparty/squareline/cache

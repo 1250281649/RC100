@@ -14,7 +14,7 @@
 #define BATTERY_PADDING         2       // 电池内部填充边距
 
 #define BG_COLOR                lv_color_hex(0x87CEEB)  // 天空蓝
-#define BATTERY_OUTLINE_COLOR   lv_color_hex(0xEFEFEF)  // 电池外框白色
+#define BATTERY_OUTLINE_COLOR   lv_palette_main(LV_PALETTE_CYAN)
 #define BATTERY_FULL_COLOR      lv_palette_main(LV_PALETTE_GREEN)  // 电量充足绿色
 #define BATTERY_LOW_COLOR       lv_palette_main(LV_PALETTE_RED)  // 低电量红色
 #define BATTERY_WARN_COLOR      lv_palette_main(LV_PALETTE_YELLOW)  // 电量警告黄色
