@@ -22,7 +22,7 @@
 #define TFT_MISO    -1
 #define TFT_MOSI    23
 #define TFT_SCLK    18
-#define TFT_CS      0 // Not connected  15
+#define TFT_CS      0
 #define TFT_DC      2
 #define TFT_RST     19  // Connect reset to ensure display initialises
 

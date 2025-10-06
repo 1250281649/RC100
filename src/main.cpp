@@ -17,7 +17,7 @@ const adc1_channel_t channels[NUM_CHANNELS] = {
     ADC1_CHANNEL_0, // GPIO36
     ADC1_CHANNEL_3, // GPIO39
     ADC1_CHANNEL_4, // GPIO32
-    ADC1_CHANNEL_5  // GPIO33
+    ADC1_CHANNEL_5, // GPIO33
 };
 
 
@@ -44,7 +44,7 @@ void adc_task(void *pvParameters) {
         
         // 发送到队列
         xQueueSend(adc_queue, adc_values, portMAX_DELAY);
-        vTaskDelay(pdMS_TO_TICKS(100)); // 每50ms采样一次
+        vTaskDelay(pdMS_TO_TICKS(200)); // 每50ms采样一次
     }
 }
 
