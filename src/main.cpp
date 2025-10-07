@@ -10,6 +10,8 @@
 #include "lcd.h"
 #include "io_def.h"
 #include "buzzer.h"
+#include "I2CDevice.h"
+#include "keyboard.h"
 
 // 定义4个ADC通道
 #define NUM_CHANNELS 4
@@ -26,6 +28,8 @@ esp_adc_cal_characteristics_t *adc_chars;
 QueueHandle_t adc_queue;
 LCDScreen lcd;
 Buzzer buzzer;
+I2CDevice i2cDev(TCA8418_ADDR, SDA_PIN, SCL_PIN, 400000);
+Keyboard keyboard;
 
 // ADC任务
 void adc_task(void *pvParameters) {
@@ -55,10 +59,10 @@ void data_task(void *pvParameters) {
     
     while(1) {
         if (xQueueReceive(adc_queue, adc_values, portMAX_DELAY)) {
-            printf("\n=== ADC读数 ===\n");
+            // printf("\n=== ADC读数 ===\n");
             for (int i = 0; i < NUM_CHANNELS; i++) {
                 uint32_t voltage = esp_adc_cal_raw_to_voltage(adc_values[i], adc_chars);
-                printf("%s: %dmV (原始值: %d)\n", channel_names[i], voltage, adc_values[i]);
+                // printf("%s: %dmV (原始值: %d)\n", channel_names[i], voltage, adc_values[i]);
             }
         }
     }
@@ -82,6 +86,17 @@ void setup()
     Serial.println("RC Controller");
 
     buzzer.begin();
+
+    i2cDev.begin();
+    std::vector<uint8_t> devices = i2cDev.scanAllDevices();
+    Serial.print("I2C Devices Found: ");
+    for (uint8_t addr : devices) {
+        Serial.printf("0x%02X ", addr);
+    }
+    Serial.println();
+
+    keyboard.begin();
+
     lcd.begin();
     lcd.update_battery_display(30); /* 初始电量30% */
     lcd.signalIconUpdate(4); /* 初始信号强度3格 */
@@ -92,12 +107,12 @@ void setup()
     // 初始化ADC
     adc1_config_width(ADC_WIDTH_BIT_12);
     for (int i = 0; i < NUM_CHANNELS; i++) {
-        adc1_config_channel_atten(channels[i], ADC_ATTEN_DB_11);
+        adc1_config_channel_atten(channels[i], ADC_ATTEN_DB_12);
     }
 
     // 初始化校准
     adc_chars = (esp_adc_cal_characteristics_t*)calloc(1, sizeof(esp_adc_cal_characteristics_t));
-    esp_adc_cal_characterize(ADC_UNIT_1, ADC_ATTEN_DB_11, ADC_WIDTH_BIT_12, 1100, adc_chars);
+    esp_adc_cal_characterize(ADC_UNIT_1, ADC_ATTEN_DB_12, ADC_WIDTH_BIT_12, 1100, adc_chars);
 
     // 创建队列
     adc_queue = xQueueCreate(10, sizeof(uint32_t[NUM_CHANNELS]));
@@ -120,4 +135,6 @@ void setup()
 void loop() {
     lv_task_handler();
     vTaskDelay(100);
+
+    keyboard.readKey();
 }
