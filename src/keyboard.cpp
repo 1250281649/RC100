@@ -9,7 +9,7 @@ bool Keyboard::begin()
         Serial.println("Keyboard initialized successfully.");
     }
 
-    tca8418.matrix(4, 4); // 配置为4x4矩阵键盘
+    tca8418.matrix(KEY_ROWS, KEY_COLS); // 配置为4x4矩阵键盘
     tca8418.flush();  // 清空中断
 
     return true;
@@ -33,11 +33,6 @@ void Keyboard::readKey()
         Serial.print(row);
         Serial.print("\tC: ");
         Serial.print(col);
-        Serial.print(" - ");
-        // Serial.print(keymap[col][row]);
-        // if (pressed) {
-        //     display.print(keymap[col][row]);
-        // }
-        Serial.println();
+        printf("  %c\n", keymap[row][col]);
     }
 }

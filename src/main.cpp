@@ -134,7 +134,7 @@ void setup()
 
 void loop() {
     lv_task_handler();
-    vTaskDelay(100);
+    vTaskDelay(50);
 
     keyboard.readKey();
 }
