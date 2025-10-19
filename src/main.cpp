@@ -12,6 +12,7 @@
 #include "buzzer.h"
 #include "I2CDevice.h"
 #include "keyboard.h"
+#include "mpu6050.h"
 
 // 定义4个ADC通道
 #define NUM_CHANNELS 4
@@ -30,6 +31,9 @@ LCDScreen lcd;
 Buzzer buzzer;
 I2CDevice i2cDev(TCA8418_ADDR, SDA_PIN, SCL_PIN, 400000);
 Keyboard keyboard;
+const int mpu6050_sample_delay = 10; // 采样间隔10ms
+unsigned long last_mpu6050_sample_time = 0;
+const int mpu6050_dispaly_delay = 500; // 显示间隔1S
 
 // ADC任务
 void adc_task(void *pvParameters) {
@@ -80,6 +84,27 @@ void vTaskBlink(void *pvParameters) {
     }
 }
 
+void vMPU6050(void *pvParameters) {
+    unsigned long current_time = millis();
+
+    while (1) {
+        current_time = millis();
+        mpu.update();
+        if (current_time - last_mpu6050_sample_time >= mpu6050_dispaly_delay) {
+            last_mpu6050_sample_time = current_time;
+            // 获取X, Y, Z三轴的倾斜角度（单位：度）
+            Serial.print("X轴角度: ");
+            Serial.print(mpu.getAngleX());
+            Serial.print("°\tY轴角度: ");
+            Serial.print(mpu.getAngleY());
+            Serial.print("°\tZ轴角度: ");
+            Serial.print(mpu.getAngleZ());
+            Serial.println("°");
+        }
+        vTaskDelay(pdMS_TO_TICKS(mpu6050_sample_delay));
+    }
+}
+
 void setup()
 {
     Serial.begin(115200);
@@ -97,10 +122,11 @@ void setup()
 
     keyboard.begin();
 
+    setupSensor();
     lcd.begin();
     lcd.update_battery_display(30); /* 初始电量30% */
     lcd.signalIconUpdate(4); /* 初始信号强度3格 */
-
+    
     // 延时一段时间后关闭蜂鸣器
     buzzer.beep(300);
 
@@ -127,6 +153,7 @@ void setup()
     // 创建任务
     xTaskCreate(adc_task, "ADC Task", 2048, NULL, 5, NULL);
     xTaskCreate(data_task, "Data Task", 2048, NULL, 4, NULL);
+    xTaskCreate(vMPU6050, "MPU6050 Task", 2048, NULL, 3, NULL);
 
     Serial.println("ADC多通道采集系统已启动...\n");
 }
