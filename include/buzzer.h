@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "io_def.h"
+#include "pcf8574.h"
 
 class Buzzer {
 public:
@@ -8,16 +9,15 @@ public:
     }
 
     void begin() {
-        pinMode(BUZZER_PIN, OUTPUT);
-        digitalWrite(BUZZER_PIN, HIGH); // 初始确保蜂鸣器关闭
+        pcf.digitalWrite(BUZZER_PIN, HIGH); // 关闭蜂鸣器
     }
 
     void on() {
-        digitalWrite(BUZZER_PIN, LOW);
+        pcf.digitalWrite(BUZZER_PIN, LOW);
     }
 
     void off() {
-        digitalWrite(BUZZER_PIN, HIGH);
+        pcf.digitalWrite(BUZZER_PIN, HIGH);
     }
     
     void beep(uint32_t duration_ms) {
