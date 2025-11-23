@@ -22,8 +22,14 @@ public:
     
     void beep(uint32_t duration_ms) {
         on();
-        delay(duration_ms);
+        vTaskDelay(pdMS_TO_TICKS(duration_ms));
         off();
+    }
+
+    void beepDouble() {
+        beep(100);
+        vTaskDelay(pdMS_TO_TICKS(100));
+        beep(100);
     }
 
 private:

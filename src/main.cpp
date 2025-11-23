@@ -129,7 +129,7 @@ void setup()
     // lcd.signalIconUpdate(4); /* 初始信号强度3格 */
     
     // 延时一段时间后关闭蜂鸣器
-    buzzer.beep(300);
+    buzzer.beepDouble();
 
     // // 初始化ADC
     // adc1_config_width(ADC_WIDTH_BIT_12);
