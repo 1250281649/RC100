@@ -16,12 +16,13 @@
 #include "pcf8574.h"
 
 // 定义4个ADC通道
-#define NUM_CHANNELS 4
+#define NUM_CHANNELS 5
 const adc1_channel_t channels[NUM_CHANNELS] = {
-    ADC1_CHANNEL_0, // GPIO36
-    ADC1_CHANNEL_3, // GPIO39
-    ADC1_CHANNEL_4, // GPIO32
-    // ADC1_CHANNEL_5, // GPIO33
+    ADC1_CHANNEL_0, // GPIO0
+    ADC1_CHANNEL_1, // GPIO1
+    ADC1_CHANNEL_2, // GPIO2
+    ADC1_CHANNEL_3, // GPIO3
+    ADC1_CHANNEL_4, // GPIO4
 };
 
 
@@ -53,14 +54,14 @@ void adc_task(void *pvParameters) {
         
         // 发送到队列
         xQueueSend(adc_queue, adc_values, portMAX_DELAY);
-        vTaskDelay(pdMS_TO_TICKS(200)); // 每50ms采样一次
+        vTaskDelay(pdMS_TO_TICKS(50)); // 每50ms采样一次
     }
 }
 
 // 数据处理任务
 void data_task(void *pvParameters) {
     uint32_t adc_values[NUM_CHANNELS];
-    char channel_names[NUM_CHANNELS][10] = {"L-X", "L-Y", "R-X", "R-Y"};
+    char channel_names[NUM_CHANNELS][10] = {"L-X", "L-Y", "R-X", "R-Y", "BAT"};
     
     while(1) {
         if (xQueueReceive(adc_queue, adc_values, portMAX_DELAY)) {
@@ -131,18 +132,18 @@ void setup()
     // 延时一段时间后关闭蜂鸣器
     buzzer.beepDouble();
 
-    // // 初始化ADC
-    // adc1_config_width(ADC_WIDTH_BIT_12);
-    // for (int i = 0; i < NUM_CHANNELS; i++) {
-    //     adc1_config_channel_atten(channels[i], ADC_ATTEN_DB_12);
-    // }
+    // 初始化ADC
+    adc1_config_width(ADC_WIDTH_BIT_12);
+    for (int i = 0; i < NUM_CHANNELS; i++) {
+        adc1_config_channel_atten(channels[i], ADC_ATTEN_DB_12);
+    }
 
-    // // 初始化校准
-    // adc_chars = (esp_adc_cal_characteristics_t*)calloc(1, sizeof(esp_adc_cal_characteristics_t));
-    // esp_adc_cal_characterize(ADC_UNIT_1, ADC_ATTEN_DB_12, ADC_WIDTH_BIT_12, 1100, adc_chars);
+    // 初始化校准
+    adc_chars = (esp_adc_cal_characteristics_t*)calloc(1, sizeof(esp_adc_cal_characteristics_t));
+    esp_adc_cal_characterize(ADC_UNIT_1, ADC_ATTEN_DB_12, ADC_WIDTH_BIT_12, 1100, adc_chars);
 
-    // // 创建队列
-    // adc_queue = xQueueCreate(10, sizeof(uint32_t[NUM_CHANNELS]));
+    // 创建队列
+    adc_queue = xQueueCreate(10, sizeof(uint32_t[NUM_CHANNELS]));
 
     // xTaskCreate(vTaskBlink, "Blink_Task",
     //     2048, //任务栈大小
@@ -152,8 +153,8 @@ void setup()
     // );
 
     // // 创建任务
-    // xTaskCreate(adc_task, "ADC Task", 2048, NULL, 5, NULL);
-    // xTaskCreate(data_task, "Data Task", 2048, NULL, 4, NULL);
+    xTaskCreate(adc_task, "ADC Task", 2048, NULL, 5, NULL);
+    xTaskCreate(data_task, "Data Task", 2048, NULL, 4, NULL);
     xTaskCreate(vMPU6050, "MPU6050 Task", 2048, NULL, 3, NULL);
 
     Serial.println("ADC多通道采集系统已启动...\n");
@@ -165,11 +166,4 @@ void loop() {
     vTaskDelay(500);
 
     keyboard.readKey();
-
-    std::vector<uint8_t> devices = i2cDev.scanAllDevices();
-    Serial.print("I2C Devices Found: ");
-    for (uint8_t addr : devices) {
-        Serial.printf("0x%02X ", addr);
-    }
-    Serial.println();
 }
