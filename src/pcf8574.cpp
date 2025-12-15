@@ -11,7 +11,9 @@ void PCF8574_Init(Adafruit_PCF8574 &pcf) {
     // 设置引脚模式
     pcf.pinMode(BUZZER_PIN, OUTPUT);
     pcf.pinMode(BAT_IN_PIN, INPUT);
+    pcf.pinMode(LCD_BL_PIN, OUTPUT);
     
     // 初始状态
     pcf.digitalWrite(BUZZER_PIN, HIGH); // 关闭蜂鸣器
+    pcf.digitalWrite(LCD_BL_PIN, LOW);
 }

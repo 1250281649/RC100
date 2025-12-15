@@ -36,6 +36,7 @@ Keyboard keyboard;
 const int mpu6050_sample_delay = 10; // 采样间隔10ms
 unsigned long last_mpu6050_sample_time = 0;
 const int mpu6050_dispaly_delay = 500; // 显示间隔1S
+extern Adafruit_ST7789 tft;
 
 // ADC任务
 void adc_task(void *pvParameters) {
@@ -95,13 +96,13 @@ void vMPU6050(void *pvParameters) {
         if (current_time - last_mpu6050_sample_time >= mpu6050_dispaly_delay) {
             last_mpu6050_sample_time = current_time;
             // 获取X, Y, Z三轴的倾斜角度（单位：度）
-            Serial.print("X轴角度: ");
-            Serial.print(mpu.getAngleX());
-            Serial.print("°\tY轴角度: ");
-            Serial.print(mpu.getAngleY());
-            Serial.print("°\tZ轴角度: ");
-            Serial.print(mpu.getAngleZ());
-            Serial.println("°");
+            // Serial.print("X轴角度: ");
+            // Serial.print(mpu.getAngleX());
+            // Serial.print("°\tY轴角度: ");
+            // Serial.print(mpu.getAngleY());
+            // Serial.print("°\tZ轴角度: ");
+            // Serial.print(mpu.getAngleZ());
+            // Serial.println("°");
         }
         vTaskDelay(pdMS_TO_TICKS(mpu6050_sample_delay));
     }
@@ -125,12 +126,13 @@ void setup()
     keyboard.begin();
 
     setupSensor();
-    // lcd.begin();
-    // lcd.update_battery_display(30); /* 初始电量30% */
-    // lcd.signalIconUpdate(4); /* 初始信号强度3格 */
     
     // 延时一段时间后关闭蜂鸣器
     buzzer.beepDouble();
+
+    lcd.begin();
+    lcd.update_battery_display(30); /* 初始电量30% */
+    lcd.signalIconUpdate(4); /* 初始信号强度3格 */
 
     // 初始化ADC
     adc1_config_width(ADC_WIDTH_BIT_12);
@@ -152,7 +154,7 @@ void setup()
     //     NULL //任务任务句柄指针
     // );
 
-    // // 创建任务
+    // 创建任务
     xTaskCreate(adc_task, "ADC Task", 2048, NULL, 5, NULL);
     xTaskCreate(data_task, "Data Task", 2048, NULL, 4, NULL);
     xTaskCreate(vMPU6050, "MPU6050 Task", 2048, NULL, 3, NULL);
@@ -162,8 +164,8 @@ void setup()
 
 
 void loop() {
-    // lv_task_handler();
-    vTaskDelay(500);
+    lv_task_handler();
+    vTaskDelay(20);
 
     keyboard.readKey();
 }

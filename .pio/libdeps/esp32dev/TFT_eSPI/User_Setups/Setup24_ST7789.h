@@ -20,11 +20,11 @@
 
 // Generic ESP32 setup
 #define TFT_MISO    -1
-#define TFT_MOSI    23
-#define TFT_SCLK    18
-#define TFT_CS      0
-#define TFT_DC      2
-#define TFT_RST     19  // Connect reset to ensure display initialises
+#define TFT_MOSI    6
+#define TFT_SCLK    20
+#define TFT_CS      7
+#define TFT_DC      10
+#define TFT_RST     -1  // Connect reset to ensure display initialises
 
 // For NodeMCU - use pin numbers in the form PIN_Dx where Dx is the NodeMCU pin designation
 // #define TFT_CS   -1      // Define as not used

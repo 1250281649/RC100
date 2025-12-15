@@ -1,20 +1,28 @@
 #include "lcd.h"
-#include <TFT_eSPI.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_ST7789.h>
+#include <SPI.h>
 #include "lvgl.h"
 #include "lv_port_disp.h"
+#include "pcf8574.h"
 
-TFT_eSPI tft = TFT_eSPI();
+Adafruit_ST7789 tft = Adafruit_ST7789(TFT_CS, TFT_DC, TFT_MOSI, TFT_SCLK, TFT_RST);
 
 
 void LCDInit() {
-    tft.begin();
+    tft.setSPISpeed(40000000);
+    tft.init(240, 240, SPI_MODE2); // Init ST7789 240x240
+    tft.setRotation(0);
+
+    //设置文本颜色（前景色）和大小
+    tft.setTextColor(ST77XX_WHITE);
+    tft.setTextSize(2);
+
     lv_init();  //初始化lvgl库
     lv_port_disp_init();
     LV_FONT_DECLARE(lv_font_simsun_16_cjk); // 声明字体
-    
-    gpio_reset_pin(LCD_BL);
-    gpio_set_direction(LCD_BL, GPIO_MODE_OUTPUT);
-    gpio_set_level(LCD_BL, 1);
+
+    pcf.digitalWrite(LCD_BL_PIN, HIGH);
 }
 
 void LCDScreen::clearScreen() {

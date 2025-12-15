@@ -28,7 +28,7 @@
 /**********************
  *      TYPEDEFS
  **********************/
-extern TFT_eSPI tft;
+extern Adafruit_ST7789 tft;
 
 /**********************
  *  STATIC PROTOTYPES
@@ -171,7 +171,13 @@ static void disp_flush(lv_disp_drv_t * disp_drv, const lv_area_t * area, lv_colo
     if(disp_flush_enabled) {
         tft.startWrite();
         tft.setAddrWindow(area->x1, area->y1, w, h);
-        tft.pushColors(&color_p->full, w * h, true);
+
+        for (int y=0; y <h ; y++) {
+            for (int x=0; x <w ; x++) {
+                lv_color_t color = color_p[y*w + x];
+                tft.writeColor(color.full, 1);
+            }
+        }
         tft.endWrite();
     }
 

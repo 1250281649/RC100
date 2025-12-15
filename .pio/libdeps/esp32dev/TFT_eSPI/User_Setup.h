@@ -278,7 +278,7 @@
 //#define TFT_MISO PA6
 //#define TFT_SCLK PA5
 
-//#define TFT_SPI_PORT 2 // SPI port 2 maximum clock rate is 27MHz
+#define TFT_SPI_PORT 2 // SPI port 2 maximum clock rate is 27MHz
 //#define TFT_MOSI PB15
 //#define TFT_MISO PB14
 //#define TFT_SCLK PB13
@@ -360,8 +360,8 @@
 // #define SPI_FREQUENCY   5000000
 // #define SPI_FREQUENCY  10000000
 // #define SPI_FREQUENCY  20000000
-#define SPI_FREQUENCY  27000000
-// #define SPI_FREQUENCY  40000000
+// #define SPI_FREQUENCY  27000000
+#define SPI_FREQUENCY  40000000
 // #define SPI_FREQUENCY  55000000 // STM32 SPI1 only (SPI2 maximum is 27MHz)
 // #define SPI_FREQUENCY  80000000
 
@@ -374,7 +374,7 @@
 // The ESP32 has 2 free SPI ports i.e. VSPI and HSPI, the VSPI is the default.
 // If the VSPI port is in use and pins are not accessible (e.g. TTGO T-Beam)
 // then uncomment the following line:
-//#define USE_HSPI_PORT
+#define USE_HSPI_PORT
 
 // Comment out the following #define if "SPI Transactions" do not need to be
 // supported. When commented out the code size will be smaller and sketches will

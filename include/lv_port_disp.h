@@ -19,6 +19,8 @@ extern "C" {
  *      INCLUDES
  *********************/
 #include "lvgl.h"
+#include <Adafruit_GFX.h>
+#include <Adafruit_ST7789.h>
 
 /*********************
  *      DEFINES
