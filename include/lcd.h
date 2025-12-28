@@ -2,6 +2,7 @@
 #include "io_def.h"
 #include "lvgl.h"
 #include "ui.h"
+#include "profile.h"
 
 #define SCREEN_WIDTH            240
 #define SCREEN_HEIGHT           240
@@ -40,9 +41,8 @@ public:
 
     void begin() {
         LCDInit();
-        ui_init();
 
-        ScreenExcavatorInit();
+        TIME_FUNCTION(ScreenExcavatorInit());
     }
 
     void clearScreen();

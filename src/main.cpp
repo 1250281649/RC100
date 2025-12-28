@@ -130,10 +130,6 @@ void setup()
     // 延时一段时间后关闭蜂鸣器
     buzzer.beepDouble();
 
-    lcd.begin();
-    lcd.update_battery_display(30); /* 初始电量30% */
-    lcd.signalIconUpdate(4); /* 初始信号强度3格 */
-
     // 初始化ADC
     adc1_config_width(ADC_WIDTH_BIT_12);
     for (int i = 0; i < NUM_CHANNELS; i++) {
@@ -153,6 +149,10 @@ void setup()
     //     1, //任务优先级
     //     NULL //任务任务句柄指针
     // );
+
+    lcd.begin();
+    lcd.update_battery_display(30); /* 初始电量30% */
+    lcd.signalIconUpdate(4); /* 初始信号强度3格 */
 
     // 创建任务
     xTaskCreate(adc_task, "ADC Task", 2048, NULL, 5, NULL);

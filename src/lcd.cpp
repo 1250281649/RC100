@@ -11,12 +11,12 @@ Adafruit_ST7789 tft = Adafruit_ST7789(TFT_CS, TFT_DC, TFT_MOSI, TFT_SCLK, TFT_RS
 
 void LCDInit() {
     tft.setSPISpeed(40000000);
-    tft.init(240, 240, SPI_MODE2); // Init ST7789 240x240
+    tft.init(240, 240, SPI_MODE0); // Init ST7789 240x240
     tft.setRotation(0);
 
     //设置文本颜色（前景色）和大小
-    tft.setTextColor(ST77XX_WHITE);
-    tft.setTextSize(2);
+    // tft.setTextColor(ST77XX_WHITE);
+    // tft.setTextSize(2);
 
     lv_init();  //初始化lvgl库
     lv_port_disp_init();
